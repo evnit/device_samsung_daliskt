@@ -15,6 +15,9 @@
 # inherit from qcom-common
 -include device/samsung/qcom-common/BoardConfigCommon.mk
 
+# Includes
+TARGET_SPECIFIC_HEADER_PATH += device/samsung/msm8660-common/include
+
 # Platform
 TARGET_BOARD_PLATFORM := msm8660
 TARGET_BOARD_PLATFORM_GPU := qcom-adreno200
@@ -43,16 +46,11 @@ COMMON_GLOBAL_CFLAGS += -DQCOM_BSP_CAMERA_ABI_HACK
 COMMON_GLOBAL_CFLAGS += -DSAMSUNG_CAMERA_HARDWARE
 TARGET_RELEASE_CPPFLAGS += -DNEEDS_VECTORIMPL_SYMBOLS
 
-# CMHW
-BOARD_HARDWARE_CLASS += hardware/samsung/cmhw
-BACKLIGHT_PATH := "/sys/class/backlight/panel/brightness"
-
 # Charger
 BOARD_CHARGING_MODE_BOOTING_LPM := /sys/class/power_supply/battery/batt_lp_charging
 BOARD_BATTERY_DEVICE_NAME := "battery"
 BOARD_CHARGER_ENABLE_SUSPEND := true
 BOARD_CHARGER_SHOW_PERCENTAGE := true
-BOARD_USE_CUSTOM_RECOVERY_FONT := \"roboto_23x41.h\"
 
 # Display
 BOARD_EGL_CFG := device/samsung/msm8660-common/configs/egl.cfg
@@ -76,8 +74,6 @@ EXTENDED_FONT_FOOTPRINT := true
 BOARD_HAVE_NEW_QC_GPS := true
 TARGET_GPS_HAL_PATH := device/samsung/msm8660-common/gps
 
-# Includes
-TARGET_SPECIFIC_HEADER_PATH += device/samsung/msm8660-common/include
 
 # Lights
 TARGET_PROVIDES_LIBLIGHT := true
@@ -90,7 +86,8 @@ TARGET_NO_ADAPTIVE_PLAYBACK := true
 TARGET_USES_LOGD := false
 
 # Power
-TARGET_USES_CM_POWERHAL := true
+#TARGET_USES_CM_POWERHAL := true
+TARGET_POWERHAL_VARIANT := qcom
 
 # Qualcomm support
 COMMON_GLOBAL_CFLAGS += -DQCOM_BSP
@@ -98,7 +95,6 @@ TARGET_USES_QCOM_BSP := true
 
 # RIL
 BOARD_RIL_CLASS := ../../../device/samsung/msm8660-common/ril
-#BOARD_RIL_CLASS := ../../../hardware/samsung/ril
 
 # SELinux
 include device/qcom/sepolicy/sepolicy.mk
@@ -107,11 +103,16 @@ BOARD_SEPOLICY_DIRS += \
     device/samsung/msm8660-common/sepolicy
 
 BOARD_SEPOLICY_UNION += \
+    app.te \
     bluetooth.te \
     bootanim.te \
     device.te \
+    domain.te \
+    drmserver.te \
     file.te \
     file_contexts \
+    healthd.te \
+    init.te \
     gamma_dev.te \
     genfs_contexts \
     hostapd.te \
@@ -139,7 +140,8 @@ BOARD_SEPOLICY_UNION += \
     thermal-engine.te \
     ueventd.te \
     vold.te \
-    wpa.te
+    wpa.te \
+    wpa_socket.te
 
 # Wifi related defines
 BOARD_HAVE_SAMSUNG_WIFI := true
